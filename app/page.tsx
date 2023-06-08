@@ -1,95 +1,109 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
+
+import { Formik} from 'formik';
+import Link from 'next/link';
+import * as Yup from 'yup';
+import SecondPage from './second-page';
+
 
 export default function Home() {
+
+
+  const ArrowRigth = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className='arrows' ><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+
+  const SignupSchema = Yup.object().shape({
+    name: Yup.string()
+     .required("Name required"),
+
+    phone: Yup.string()
+    .required("Phone required")
+    .matches(/^(\+?\d{9,})$/, "Invalid phone nr."),
+
+    email: Yup.string()
+      .email("Invalid email")
+      .required("Email required"),
+
+    country: Yup.string()
+    .required("Country required"),
+
+	  address: Yup.string()
+      .required("Address Required"),
+
+    city: Yup.string()
+    .required("City Required"),
+    
+    zip: Yup.string()
+    .required("zip code requred")
+    .matches(/^(\+?\d{4,})$/, "Invalid zip code"),
+    
+  });
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <main>
+      <section className='middle_section'>
+       <h1 className='heading'>Personal Information</h1>
+        <h2 className='sub_heading'>Please provide your name,email adress,and phone number.</h2>
+<Formik
+       initialValues={{ name: '', phone: "", email: ""}}
+       validationSchema={SignupSchema}
+       onSubmit={ async () => {console.log()}}>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+
+       {({
+        values,
+         errors,
+         touched,
+         handleChange,
+         handleSubmit,
+      }) => (
+
+<form className="form_container" onSubmit={handleSubmit}>
+
+    <label className='basic_lable' >Your Name</label>
+      <input 
+        type="text" 
+        name='name' 
+        value={values.name}
+        onChange={handleChange}
+        className="basic_imput" 
+      
         />
-      </div>
+      <span className="error_message">{errors.name && touched.name && errors.name }</span>
+    
+      <label className='basic_lable'  >Phone</label>
+        <input 
+          type="tel" 
+          name='phone' 
+          value={values.phone}
+          onChange={handleChange}
+          className="basic_imput"      
+      
+          />
+    <span className="error_message">{errors.phone && touched.phone && errors.phone}</span>
+    
+    
+    <label className='basic_lable' >Email address</label>
+        <input 
+          type="email"  
+          name='email' 
+          value={values.email}
+          onChange={handleChange}
+          className="basic_imput"
+      
+          />
+    <span className="error_message">{errors.email && touched.email && errors.email}</span>
+    
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+     <button type="submit" className='next_step_button'>Next step{ArrowRigth}</button>
+</form> 
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+)}
+     </Formik>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+     
+    <Link href="SecondPage">ey</Link>
+      </section>
     </main>
   )
 }
