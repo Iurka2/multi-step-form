@@ -1,40 +1,34 @@
 'use client';
 
 import { Formik} from 'formik';
-import * as Yup from 'yup';
+import { FiArrowRight } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
+import { validationSchema } from '../validation';
+import { UserContext } from '../userContext';
+import React from 'react';
+import { useRouter } from 'next/navigation';
 
 
-export default function SecondPage() {
 
-
-  const ArrowRigth = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className='arrows_left' ><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-
-  const SignupSchema = Yup.object().shape({
-    country: Yup.string()
-    .required("Country required"),
-
-	  address: Yup.string()
-      .required("Address Required"),
-
-    city: Yup.string()
-    .required("City Required"),
-    
-    zip: Yup.string()
-    .required("Zip code requred")
-    .matches(/^(\+?\d{4,})$/, "Invalid zip code"),
-    
-  });
-
-
+export default function Secondpage() {
+  // access user and setUser from context
+  const { user, setUser } = React.useContext(UserContext); 
+  
+  // create a router instance
+  const router = useRouter();  
   return (
     <main>
       <section className='middle_section'>
        <h1 className='heading'>Where can we find you ?</h1>
         <h2 className='sub_heading'>Please provide your adress,country,city and zip code.</h2>
 <Formik
-       initialValues={{ country: '', city: "", zip: "", address: ""}}
-       validationSchema={SignupSchema}
-       onSubmit={ async () => {console.log()}}>
+       initialValues={user}
+       validationSchema={validationSchema.location}
+       onSubmit={ async (values) => {
+        console.log(values)
+        setUser(values);
+        router.push('/summary');
+        }}>
 
 
        {({
@@ -49,7 +43,7 @@ export default function SecondPage() {
 
     <label className='basic_lable' >Country</label>
       <input 
-        type="text" 
+        type="country" 
         name='country' 
         value={values.country}
         onChange={handleChange}
@@ -94,8 +88,8 @@ export default function SecondPage() {
     <span className="error_message">{errors.address && touched.address && errors.address}</span>
     
 
-    <button type="submit" className='next_step_button'>Go back{ArrowRigth}</button>
-    <button type="submit" className='next_step_button'>Next step{ArrowRigth}</button>
+    <button onClick={()=>{router.push('/');}} className='go_back_button'><FiArrowLeft className="arrows" />Go back</button>
+    <button type="submit" className='next_step_button'>Next step<FiArrowRight className="arrows" /></button>
 </form> 
 
 )}
@@ -104,3 +98,5 @@ export default function SecondPage() {
     </main>
   )
 }
+
+

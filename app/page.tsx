@@ -1,42 +1,23 @@
 'use client';
 
 import { Formik} from 'formik';
-import Link from 'next/link';
-import * as Yup from 'yup';
-import SecondPage from './second-page';
+import { FiArrowRight } from "react-icons/fi";
+import { validationSchema } from './validation';
+import React from "react"
+import { UserContext } from './userContext';
+import { useRouter } from 'next/navigation';
+
 
 
 export default function Home() {
 
+// access user and setUser from context
+  const { user, setUser } = React.useContext(UserContext); 
 
-  const ArrowRigth = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className='arrows' ><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+// create a router instance
+  const router = useRouter(); 
 
-  const SignupSchema = Yup.object().shape({
-    name: Yup.string()
-     .required("Name required"),
 
-    phone: Yup.string()
-    .required("Phone required")
-    .matches(/^(\+?\d{9,})$/, "Invalid phone nr."),
-
-    email: Yup.string()
-      .email("Invalid email")
-      .required("Email required"),
-
-    country: Yup.string()
-    .required("Country required"),
-
-	  address: Yup.string()
-      .required("Address Required"),
-
-    city: Yup.string()
-    .required("City Required"),
-    
-    zip: Yup.string()
-    .required("zip code requred")
-    .matches(/^(\+?\d{4,})$/, "Invalid zip code"),
-    
-  });
 
 
   return (
@@ -45,9 +26,13 @@ export default function Home() {
        <h1 className='heading'>Personal Information</h1>
         <h2 className='sub_heading'>Please provide your name,email adress,and phone number.</h2>
 <Formik
-       initialValues={{ name: '', phone: "", email: ""}}
-       validationSchema={SignupSchema}
-       onSubmit={ async () => {console.log()}}>
+       initialValues={user}
+       validationSchema={validationSchema.personal}
+       onSubmit={ async (values) => {
+        console.log(values)
+        setUser(values);
+        router.push('/secondpage');
+        }}>
 
 
        {({
@@ -67,18 +52,16 @@ export default function Home() {
         value={values.name}
         onChange={handleChange}
         className="basic_imput" 
-      
         />
       <span className="error_message">{errors.name && touched.name && errors.name }</span>
     
-      <label className='basic_lable'  >Phone</label>
+      <label className='basic_lable'>Phone</label>
         <input 
           type="tel" 
           name='phone' 
           value={values.phone}
           onChange={handleChange}
           className="basic_imput"      
-      
           />
     <span className="error_message">{errors.phone && touched.phone && errors.phone}</span>
     
@@ -90,20 +73,21 @@ export default function Home() {
           value={values.email}
           onChange={handleChange}
           className="basic_imput"
-      
           />
     <span className="error_message">{errors.email && touched.email && errors.email}</span>
     
 
-     <button type="submit" className='next_step_button'>Next step{ArrowRigth}</button>
+     <button type="submit" className='next_step_button'>Next step<FiArrowRight className="arrows" /></button>
 </form> 
 
 )}
      </Formik>
 
      
-    <Link href="SecondPage">ey</Link>
+    
       </section>
     </main>
   )
 }
+
+
